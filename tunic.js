@@ -24,55 +24,11 @@ let c3 = 0b000010000000
 let c4 = 0b000100000000
 let c5 = 0b001000000000
 let c6 = 0b010000000000
-let couilleMask = 0b100000000000
+let couille = 0b100000000000
 let vowelMask = 0b000000011111
 let consonantMask = 0b011111100000
  
 let charMap = {}
-
-function initCharMap() {
-    charMap = {
-    [0]: {phonetic: " ", inglishe: " "},
-    [c4+c6]: {phonetic: "m", inglishe: "m"},
-    [c1+c4+c6]: {phonetic: "n", inglishe: "n"},
-    [c1+c2+c3+c4+c5+c6]: {phonetic: "ŋ", inglishe: "ng"},
-    [c3+c5]: {phonetic: "p", inglishe: "p"},
-    [c2+c6]: {phonetic: "b", inglishe: "b"},
-    [c1+c3+c5]: {phonetic: "t", inglishe: "t"},
-    [c2+c4+c6]: {phonetic: "d", inglishe: "d"},
-    [c2+c3+c6]: {phonetic: "k", inglishe: "k"},
-    [c3+c5+c6]: {phonetic: "g", inglishe: "g"},
-    [c2+c4]: {phonetic: "dʒ", inglishe: "dj"},
-    [c1+c5]: {phonetic: "lɣ", inglishe: "l"},
-    [c3+c4+c5]: {phonetic: "f", inglishe: "f"},
-    [c1+c2+c6]: {phonetic: "v", inglishe: "v"},
-    [c1+c2+c3+c5]: {phonetic: "θ", inglishe: "th"},
-    [c2+c4+c5+c6]: {phonetic: "ð", inglishe: "z"},
-    [c2+c3+c4+c5]: {phonetic: "s", inglishe: "s"},
-    [c1+c2+c5+c6]: {phonetic: "z", inglishe: "z"},
-    [c1+c3+c4+c5+c6]: {phonetic: "ʃ", inglishe: "sh"},
-    [c1+c2+c3+c4+c6]: {phonetic: "tʃ", inglishe: "tch"},
-    [c2+c5+c6]: {phonetic: "h", inglishe: "h"},
-    [c2+c3+c5]: {phonetic: "ɹ̠", inglishe: "r"},
-    [c1+c2+c5]: {phonetic: "j", inglishe: "y"},
-    [c1+c3]: {phonetic: "w", inglishe: "w"},
-    [c2+c5]: {phonetic: "l", inglishe: "l"},
-    [v1+v2+v3]: {phonetic: "æ", inglishe: "ay"},
-    [v1+v3]: {phonetic: "ɒ", inglishe: "o"},
-    [v4+v5]: {phonetic: "ɪ", inglishe: "i"},
-    [v3+v4+v5]: {phonetic: "ɛ", inglishe: "è"},
-    [v1+v2]: {phonetic: "ʌ", inglishe: "euh"},
-    [v1+v3+v4+v5]: {phonetic: "i", inglishe: "i"},
-    [v1+v2+v3+v4]: {phonetic: "u:", inglishe: "ou"},
-    [v2+v3+v4+v5]: {phonetic: "ə", inglishe: "a"},
-    [v1+v2+v4+v5]: {phonetic: "ɑ:", inglishe: "a"},
-    [v1+v3+v5]: {phonetic: "ɔ:", inglishe: "uh"},
-    [v1]: {phonetic: "ɐɪ", inglishe: "ei"},
-    [v2]: {phonetic: "aɪ", inglishe: "aï"},
-    [v5]: {phonetic: "aʊ", inglishe: "ow"},
-    [v1+v2+v3+v4+v5]: {phonetic: "o", inglishe: "o"}
-    }
-}
 
 document.addEventListener('DOMContentLoaded', function() {
     initializer();
@@ -93,11 +49,11 @@ function createTableFromDict(dict) {
         headerRow.appendChild(th);
 
         let phoneticCell = document.createElement('td');
-        phoneticCell.innerText = dict[key].phonetic || '?';
+        phoneticCell.innerText = charBitRepr(key,"phonetic")
         phoneticRow.appendChild(phoneticCell);
 
         let inglisheCell = document.createElement('td');
-        inglisheCell.innerText = dict[key].inglishe || '?';
+        inglisheCell.innerText = charBitRepr(key,"inglishe")
         inglisheRow.appendChild(inglisheCell);
     }
 
@@ -135,8 +91,7 @@ function updateCharMapEditor() {
 }
 
 function initializer() {
-    initCharMap()
-    updateCharMapEditor()
+    rebuildScreen()
     console.log("Its transcribing time !")
 }
 
@@ -154,6 +109,12 @@ function applyLine(charBar, mask) {
     updateUI()
 
     charBar.classList.toggle("activeBar");
+}
+
+function rebuildScreen() {
+    updateCharMapEditor()
+    recomputeSentences()
+    updateUI()
 }
 
 function updateUI() {
@@ -180,7 +141,7 @@ function removeLastChar() {
 function phoneticRepr(char) {
     let vowel = char & vowelMask
     let consonant = char & consonantMask
-    let hasReversedOrdering = (char & couilleMask) == couilleMask
+    let hasReversedOrdering = (char & couille) == couille
 
     var phoneticRepresentation = ""
         
@@ -199,7 +160,7 @@ function phoneticRepr(char) {
 function inglisheRepr(char) {
     let vowel = char & vowelMask
     let consonant = char & consonantMask
-    let hasReversedOrdering = (char & couilleMask) == couilleMask
+    let hasReversedOrdering = (char & couille) == couille
 
     var inglisheRepresentation = ""
         
@@ -229,6 +190,7 @@ function tunicRepr(char) {
         ${char & c4 ? `<div class="charBar_small c4"></div>` : ""}
         ${char & c5 ? `<div class="charBar_small c5"></div>` : ""}
         ${char & c6 ? `<div class="charBar_small c6"></div>` : ""}
+        ${char & couille ? `<div class="couille_small"></div>` : ""}
     </div>
 `
     return symbol
@@ -270,6 +232,7 @@ function handleKeyDown(event) {
     else if (event.key === 'Backspace') { handleBackspace() } 
     else if (event.key === ' ') { handleSpace() } 
     else if (event.key === '7') { handleSeven() } 
+    else if (event.key === '8') { handleEight() } 
     else if (event.key === '9') {handleNine() } 
     else if (event.key === '4') {handleFour() } 
     else if (event.key === '5') {handleFive() } 
@@ -296,6 +259,10 @@ function handleSpace() {
 
 function handleSeven() {
     applyLine(document.getElementById("v1"), v1)
+}
+
+function handleEight() {
+    applyLine(document.getElementById("couille"), couille)
 }
 
 function handleNine() {
@@ -349,11 +316,11 @@ document.addEventListener('click', function() {
 });
 
 
-function addEditVowel(phonetic, approx) {
+function addEditVowel(phoneticInput, approxInput) {
+    let phonetic = (phoneticInput.trim().length != 0) ? phoneticInput : "?"
+    let approx = (approxInput.trim().length != 0) ? approxInput : "?"
     charMap[currentChar & vowelMask] = {phonetic: phonetic, inglishe: approx}
-    updateCharMapEditor()
-    recomputeSentences()
-    updateUI()
+    rebuildScreen()
 }
 
 
@@ -364,11 +331,11 @@ document.getElementById('addEditVowelBtn').addEventListener('click', function() 
     addEditVowel(vowelPhonetic, vowelApprox);
 });
 
-function addEditConsonant(phonetic, approx) {
+function addEditConsonant(phoneticInput, approxInput) {
+    let phonetic = (phoneticInput.trim().length != 0) ? phoneticInput : "?"
+    let approx = (approxInput.trim().length != 0) ? approxInput : "?"
     charMap[currentChar & consonantMask] = {phonetic: phonetic, inglishe: approx}
-    updateCharMapEditor()
-    recomputeSentences()
-    updateUI()
+    rebuildScreen()
 }
 
 
