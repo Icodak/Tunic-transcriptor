@@ -11,10 +11,10 @@
 <body>
     <div class="contentContainer">
         <h1 class="title">Tunic speak transcriber</h1>
-        <div class="vstack" style="padding: 30px;">
+        <div class="vstack" style="padding: 30px">
             <div class="mapsContainer">
-                    <div id="vowelMapContainer"></div>
-                    <div id="consonantMapContainer"></div>
+                <div id="vowelMapContainer"></div>
+                <div id="consonantMapContainer"></div>
             </div>
             <div class="hstack">
                 <div id="phoneticPreview" class="proportionned preview"></div>
@@ -56,25 +56,29 @@
     </div>
     <div class="editBtnContainer">
         <div>
-            <input id="vowelPhonetic" type="text" placeholder="Phonetic"></input>
-            <input id="vowelApprox" type="text" placeholder="English approx"></input>
+            <input id="vowelPhonetic" type="text" placeholder="Phonetic" />
+            <input id="vowelApprox" type="text" placeholder="English approx" />
             <button type="button" id="addEditVowelBtn">Add/Edit Vowel</button>
         </div>
         <div>
-            <input id="consonantPhonetic" type="text" placeholder="Phonetic"></input>
-            <input id="consonantApprox" type="text" placeholder="English approx"></input>
-            <button type="button" id="addEditConsonantBtn">Add/Edit consonant</button>
+            <input id="consonantPhonetic" type="text" placeholder="Phonetic" />
+            <input id="consonantApprox" type="text" placeholder="English approx" />
+            <button type="button" id="addEditConsonantBtn">
+                Add/Edit consonant
+            </button>
         </div>
     </div>
 
-    <div class="inoutMaps">  
+    <div class="inoutMaps">
         <div>
             <label for="importFile" class="customFileUpload">
                 Import transcriptions
             </label>
             <input type="file" id="importFile" accept=".json" onchange="importCharMap()" />
         </div>
-        <button type="button" onclick="exportCharMap()">Export transcriptions</button>
+        <button type="button" onclick="exportCharMap()">
+            Export transcriptions
+        </button>
     </div>
     <script src="tunic.js" defer></script>
 </body>
